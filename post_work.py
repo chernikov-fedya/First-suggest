@@ -1,5 +1,6 @@
 import vk_api
 import openpyxl
+import sys
 
 my_token = 'vk1.a.vKG_r4RwJAUsQUg_vzRTFV-UNnBNFkwndc3M3YvSxqScmPUU7P_9NA50XZCvjHuXKv9bXI1NVpojSGgdDrIY_bYfoAkCF9U19KgNR7' \
            'r0qFYSe8CkyS0o3UMFcV2bhBNmX0OnaEYqIPWBjlxCz5zJr98ZFetlo6nTQKWB47yki5kqPRnZRqHvPLXJW-WnZArTMQyhb87lIMlCHLY' \
@@ -19,7 +20,7 @@ def Excel_groups():
     sheet = wb
     count = 2
     a = ''
-    print('Группы:')
+    print('Группы:\n')
     while a != 'None':
         a = str(sheet[count][0].value)
         if a != 'None':
@@ -27,8 +28,8 @@ def Excel_groups():
             print(a)
     #Проверить правильно ли считывает
         count +=1 
-    group_length = len(groups_list)
-    print(f'Длина таблицы = {group_length} строк')
+    print('\n')
+
 
 
 def Requester():
@@ -39,16 +40,18 @@ def Requester():
     sheet = wb
     count = 2
     a = ''
-    print('Тщвары:')
+    print('Выберите позицию из списка товаров:\n')
     while a != 'None':
         a = str(sheet[count][0].value)
         if a != 'None':
             print(a)
             count += 1
     goods_length = count
-    good = input('Введите название вещи')
+    good = input('\nВведите название вещи\n')
+    in_stock=0
     for i in range(1, goods_length):
         if good == str(sheet[i][0].value):
+            in_stock = 1
             good_attachments.append(str(sheet[i][2].value))
             good_attachments.append(str(sheet[i][3].value))
             good_attachments.append(str(sheet[i][4].value))
@@ -56,13 +59,18 @@ def Requester():
             good_attachments.append(str(sheet[i][6].value))
             good_attachments.append(str(sheet[i][7].value))
             good_message = str(sheet[i][1].value)
+            Sender()
+        elif good == 'Выйти' or good == 'выйти' or good == 'стоп' or good == 'stop' or good == 'exit':
+            sys.exit()
+    if in_stock == 0:
+        print('\nТакого товара нет в наличии, выберите другой')
+        Requester()
 
 
 def Sender():
     for i in groups_list:
         print(vk.wall.post(owner_id = int(f'-{i}'), message = good_message +'\n\n'+ message_const,
                         attachments = good_attachments))
-
-Excel_groups()
-Requester()
-Sender()
+while True:
+    Excel_groups()
+    Requester()
