@@ -15,4 +15,4 @@ for j in range(50):
     for i in range(len(cock)):
         print(vk.wall.post(owner_id = -cock[i], message = 'зилибоба',
                     attachments = ['photo-33598391_457382619', 'photo-33598391_457382620']))
-        hui
+        print('Hello, world!')
