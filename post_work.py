@@ -12,30 +12,24 @@ message_const = '''📍Самовывоз с примеркой: Москва, �
 📦Отправка любой ТК по РФ.
 🚶Собственная доставка по Москве с примеркой!'''
 
-def Excel_groups():
-    global groups_list
-    groups_list = []
-    wb = openpyxl.open("/Users/artem_1/Desktop/python/First-suggest/vk.xlsx")
+
+def excel_groups():
+    global list_groups
+    list_groups = vk.groups.get(user_id = 800884715)['items']
+    wb = openpyxl.load_workbook("vk.xlsx")
+    #wb = openpyxl.open("/Users/artem_1/Desktop/python/First-suggest/vk.xlsx")
     wb = wb['groups']
     sheet = wb
-    count = 2
-    a = ''
-    print('Группы:\n')
-    while a != 'None':
-        a = str(sheet[count][0].value)
-        if a != 'None':
-            groups_list.append(str(sheet[count][1].value))
-            print(a)
-    #Проверить правильно ли считывает
-        count +=1 
-    print('\n')
+    for i in range(len(list_groups)):
+        sheet[i + 1][0].value = list_groups[i]
+    wb.save("vk.xlsx")
 
 
-
-def Requester():
+def requester():
     global good_attachments, good_message
     good_attachments = []
-    wb = openpyxl.open("/Users/artem_1/Desktop/python/First-suggest/vk.xlsx")
+    wb = openpyxl.load_workbook("vk.xlsx")
+    #wb = openpyxl.open("/Users/artem_1/Desktop/python/First-suggest/vk.xlsx")
     wb = wb['goods']
     sheet = wb
     count = 2
@@ -59,18 +53,17 @@ def Requester():
             good_attachments.append(str(sheet[i][6].value))
             good_attachments.append(str(sheet[i][7].value))
             good_message = str(sheet[i][1].value)
-            Sender()
+            sender()
         elif good == 'Выйти' or good == 'выйти' or good == 'стоп' or good == 'stop' or good == 'exit':
             sys.exit()
     if in_stock == 0:
         print('\nТакого товара нет в наличии, выберите другой')
-        Requester()
+        requester()
 
 
-def Sender():
-    for i in groups_list:
+def sender():
+    for i in list_groups:
         print(vk.wall.post(owner_id = int(f'-{i}'), message = good_message +'\n\n'+ message_const,
                         attachments = good_attachments))
 while True:
-    Excel_groups()
-    Requester()
+    requester()
