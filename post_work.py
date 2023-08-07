@@ -1,3 +1,5 @@
+import time
+
 import vk_api
 import openpyxl
 import sys
@@ -18,8 +20,8 @@ def excel_groups():
     list_groups = vk.groups.get(user_id = 800884715)['items']
     wb = openpyxl.load_workbook("vk.xlsx")
     #wb = openpyxl.open("/Users/artem_1/Desktop/python/First-suggest/vk.xlsx")
-    wb = wb['groups']
-    sheet = wb
+    ws = wb['groups']
+    sheet = ws
     for i in range(len(list_groups)):
         sheet[i + 1][0].value = list_groups[i]
     wb.save("vk.xlsx")
@@ -61,9 +63,16 @@ def requester():
         requester()
 
 
-def sender():
+def sender(i = 0):
     for i in list_groups:
-        print(vk.wall.post(owner_id = int(f'-{i}'), message = good_message +'\n\n'+ message_const,
+        try:
+            print(vk.wall.post(owner_id = int(f'-{i}'), message = good_message +'\n\n'+ message_const,
                         attachments = good_attachments))
+            time.sleep(5)
+        except Exception as e:
+            print("Капчу хочу")
+
+
 while True:
+    excel_groups()
     requester()
