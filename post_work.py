@@ -22,7 +22,6 @@ def requester():
     good = combo.get()
     good_attachments = []
     wb = openpyxl.load_workbook("./vk.xlsx")
-    #wb = openpyxl.open("/Users/artem_1/Desktop/python/First-suggest/vk.xlsx")
     wb = wb['goods']
     sheet = wb
     for i in range(2, goods_length+2):
@@ -67,10 +66,6 @@ while a != 'None':
     if a != 'None':
         goods_list.append(a)
         count += 1
-
-
-def goods_length(goods_list): return len(goods_list)
-
 
 
 window = Tk()
