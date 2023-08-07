@@ -1,23 +1,73 @@
 import time
 import vk_api
+# img_viewer.py
 
+import PySimpleGUI as sg
+import os.path
 
-my_token = 'vk1.a.vKG_r4RwJAUsQUg_vzRTFV-UNnBNFkwndc3M3YvSxqScmPUU7P_9NA50XZCvjHuXKv9bXI1NVpojSGgdDrIY_bYfoAkCF9U19KgNR7' \
-           'r0qFYSe8CkyS0o3UMFcV2bhBNmX0OnaEYqIPWBjlxCz5zJr98ZFetlo6nTQKWB47yki5kqPRnZRqHvPLXJW-WnZArTMQyhb87lIMlCHLY' \
-           'fil-wRg'
-vk_session = vk_api.VkApi(token = my_token)
-vk = vk_session.get_api()
+# First the window layout in 2 columns
 
+file_list_column = [
+    [
+        sg.Text("Image Folder"),
+        sg.In(size=(25, 1), enable_events=True, key="-FOLDER-"),
+        sg.FolderBrowse(),
+    ],
+    [
+        sg.Listbox(
+            values=[], enable_events=True, size=(40, 20), key="-FILE LIST-"
+        )
+    ],
+]
 
+# For now will only show the name of the file that was chosen
+image_viewer_column = [
+    [sg.Text("Choose an image from list on left:")],
+    [sg.Text(size=(40, 1), key="-TOUT-")],
+    [sg.Image(key="-IMAGE-")],
+]
 
-def post(i = 0):
-    for i in range(200):
+# ----- Full layout -----
+layout = [
+    [
+        sg.Column(file_list_column),
+        sg.VSeperator(),
+        sg.Column(image_viewer_column),
+    ]
+]
+
+window = sg.Window("Image Viewer", layout)
+
+# Run the Event Loop
+while True:
+    event, values = window.read()
+    if event == "Exit" or event == sg.WIN_CLOSED:
+        break
+    # Folder name was filled in, make a list of files in the folder
+    if event == "-FOLDER-":
+        folder = values["-FOLDER-"]
         try:
-            print(vk.wall.post(owner_id = -184644042, message = f"bad_message {i}", attachments = 'photo-33598391_457382619'))
-        except Exception as e:
-            print("Капчу хочу")
-            time.sleep(5)
-            post()
+            # Get list of files in folder
+            file_list = os.listdir(folder)
+        except:
+            file_list = []
 
+        fnames = [
+            f
+            for f in file_list
+            if os.path.isfile(os.path.join(folder, f))
+            and f.lower().endswith((".png", ".gif"))
+        ]
+        window["-FILE LIST-"].update(fnames)
+    elif event == "-FILE LIST-":  # A file was chosen from the listbox
+        try:
+            filename = os.path.join(
+                values["-FOLDER-"], values["-FILE LIST-"][0]
+            )
+            window["-TOUT-"].update(filename)
+            window["-IMAGE-"].update(filename=filename)
 
-post()
+        except:
+            pass
+
+window.close()
