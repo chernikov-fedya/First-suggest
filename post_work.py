@@ -25,14 +25,6 @@ def requester():
     #wb = openpyxl.open("/Users/artem_1/Desktop/python/First-suggest/vk.xlsx")
     wb = wb['goods']
     sheet = wb
-    count = 2
-    a = ''
-    print('Выберите позицию из списка товаров:\n')
-    while a != 'None':
-        a = str(sheet[count][0].value)
-        if a != 'None':
-            print(a)
-            count += 1
     for i in range(1, goods_length+1):
         if good == str(sheet[i][0].value):
             good_attachments.append(str(sheet[i][2].value))
@@ -54,17 +46,13 @@ def sender():
             print(vk.wall.post(owner_id=int(f'-{i}'), message=good_message + '\n\n' + message_const,
                                attachments=good_attachments))
             print('Успешно в ' + str(vk.groups.getById(group_id=i)[0]['name']))
-            txt = scrolledtext.ScrolledText(window, width=60, height=20)
-            txt.grid(column=0, row=1)
-            txt.insert(INSERT, 'Успешно в ' + str(vk.groups.getById(group_id=i)[0]['name']))
+            txt.insert(INSERT, 'Успешно в ' + str(vk.groups.getById(group_id=i)[0]['name'] + '\n'))
             window.update()
             time.sleep(5)
         except Exception as e:
             name_group = vk.groups.getById(group_id=i)[0]
             print(e, name_group['name'])
-            txt = scrolledtext.ScrolledText(window, width=60, height=20)
-            txt.grid(column=0, row=1)
-            txt.insert(INSERT, f"{e} {name_group['name']}")
+            txt.insert(INSERT, f"{e} {name_group['name']} \n")
             window.update()
 
 
