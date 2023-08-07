@@ -15,18 +15,6 @@ message_const = '''📍Самовывоз с примеркой: Москва, �
 🚶Собственная доставка по Москве с примеркой!'''
 
 
-def excel_groups():
-    global list_groups
-    list_groups = vk.groups.get(user_id = 800884715)['items']
-    wb = openpyxl.load_workbook("vk.xlsx")
-    #wb = openpyxl.open("/Users/artem_1/Desktop/python/First-suggest/vk.xlsx")
-    ws = wb['groups']
-    sheet = ws
-    for i in range(len(list_groups)):
-        sheet[i + 1][0].value = list_groups[i]
-    wb.save("vk.xlsx")
-
-
 def requester():
     global good_attachments, good_message
     good_attachments = []
@@ -63,16 +51,17 @@ def requester():
         requester()
 
 
-def sender(i = 0):
+def sender():
+    list_groups = vk.groups.get(user_id=800884715)['items']
     for i in list_groups:
         try:
             print(vk.wall.post(owner_id = int(f'-{i}'), message = good_message +'\n\n'+ message_const,
                         attachments = good_attachments))
             time.sleep(5)
         except Exception as e:
-            print("Капчу хочу")
+            name_group = vk.groups.getById(group_id= i)[0]
+            print(e, name_group['name'])
 
 
 while True:
-    excel_groups()
     requester()
