@@ -25,7 +25,7 @@ def requester():
     #wb = openpyxl.open("/Users/artem_1/Desktop/python/First-suggest/vk.xlsx")
     wb = wb['goods']
     sheet = wb
-    for i in range(1, goods_length+1):
+    for i in range(2, goods_length+2):
         if good == str(sheet[i][0].value):
             good_attachments.append(str(sheet[i][2].value))
             good_attachments.append(str(sheet[i][3].value))
@@ -74,13 +74,17 @@ def goods_length(goods_list): return len(goods_list)
 
 
 window = Tk()
-window.title("Добро пожаловать в приложение PythonRu")
+window.title("Ёбка Вконтакте")
 window.geometry('900x600')
-combo = Combobox(window)
+l0 = Label( text='     \n   ', height=5)
+l0.grid(column=0, row=0)
+combo = Combobox(window, width=70)
 combo['values'] = goods_list
-combo.grid(column=0, row=0)
-btn = Button(window, text="Начать рассылку", command=requester)
-btn.grid(column=1, row=0)
-txt = scrolledtext.ScrolledText(window, width=60, height=20)
-txt.grid(column=0, row=1)
+combo.grid(column=0, row=1)
+btn = Button(window, text="Начать рассылку", command=requester, height=2)
+btn.grid(column=1, row=1)
+l1 = Label( text='     \n   ', height=8)
+l1.grid(column=0, row=2)
+txt = scrolledtext.ScrolledText(window, width=120, height=20)
+txt.grid(row=3, columnspan=2)
 window.mainloop()
