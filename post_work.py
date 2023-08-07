@@ -1,8 +1,8 @@
 import time
-
 import vk_api
 import openpyxl
 import sys
+import PySimpleGUI as sg
 
 my_token = 'vk1.a.vKG_r4RwJAUsQUg_vzRTFV-UNnBNFkwndc3M3YvSxqScmPUU7P_9NA50XZCvjHuXKv9bXI1NVpojSGgdDrIY_bYfoAkCF9U19KgNR7' \
            'r0qFYSe8CkyS0o3UMFcV2bhBNmX0OnaEYqIPWBjlxCz5zJr98ZFetlo6nTQKWB47yki5kqPRnZRqHvPLXJW-WnZArTMQyhb87lIMlCHLY' \
@@ -18,7 +18,7 @@ message_const = '''📍Самовывоз с примеркой: Москва, �
 def requester():
     global good_attachments, good_message
     good_attachments = []
-    wb = openpyxl.load_workbook("vk.xlsx")
+    wb = openpyxl.load_workbook("./vk.xlsx")
     #wb = openpyxl.open("/Users/artem_1/Desktop/python/First-suggest/vk.xlsx")
     wb = wb['goods']
     sheet = wb
@@ -53,15 +53,22 @@ def requester():
 
 def sender():
     list_groups = vk.groups.get(user_id=800884715)['items']
+    time.sleep(5)
     for i in list_groups:
         try:
             print(vk.wall.post(owner_id = int(f'-{i}'), message = good_message +'\n\n'+ message_const,
-                        attachments = good_attachments) + 'Успешно в ' + vk.groups.getById(group_id= i)[0]['name'])
+                        attachments = good_attachments))
+            print('Успешно в ' + str(vk.groups.getById(group_id= i)[0]['name']))
             time.sleep(5)
         except Exception as e:
             name_group = vk.groups.getById(group_id= i)[0]
             print(e, name_group['name'])
 
+layout = [[sg.Button('Новое число',enable_events=True, key='-FUNCTION-', font='Helvetica 16')],
+        # затем делаем текст
+        [sg.Text('Результат:', size=(25, 1), key='-text-', font='Helvetica 16')]]
+# рисуем окно
+window = sg.Window('Спаммер', layout, size=(350,100))
 
-while True:
-    requester()
+
+window.close()
