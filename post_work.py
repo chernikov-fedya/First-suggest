@@ -56,7 +56,7 @@ def sender():
     for i in list_groups:
         try:
             print(vk.wall.post(owner_id = int(f'-{i}'), message = good_message +'\n\n'+ message_const,
-                        attachments = good_attachments) + vk.groups.getById(group_id= i)[0]['name'])
+                        attachments = good_attachments) + 'Успешно в ' + vk.groups.getById(group_id= i)[0]['name'])
             time.sleep(5)
         except Exception as e:
             name_group = vk.groups.getById(group_id= i)[0]
