@@ -48,11 +48,22 @@ def sender():
             txt.insert(INSERT, 'Успешно в ' + str(vk.groups.getById(group_id=i)[0]['name'] + '\n'))
             window.update()
             time.sleep(5)
-        except Exception as e:
+
+        except vk_api.exceptions.ApiError:
             name_group = vk.groups.getById(group_id=i)[0]
-            print(e, name_group['name'])
-            txt.insert(INSERT, f"{e} {name_group['name']} \n")
+            txt.insert(INSERT, f"Предложка закрыта в {name_group['name']} \n")
             window.update()
+            time.sleep(2)
+        except vk_api.exceptions.Captcha:
+            name_group = vk.groups.getById(group_id=i)[0]
+            txt.insert(INSERT, f"Требуется капча {name_group['name']} \n")
+            window.update()
+            time.sleep(2)
+        except Exception:
+            print('Обратитесь к разработчику')
+            txt.insert(INSERT, f"Обратитесь к разработчику")
+            window.update()
+            time.sleep(2)
 
 
 wb = openpyxl.load_workbook("./vk.xlsx")
